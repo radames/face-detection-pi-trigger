@@ -13,48 +13,57 @@ camera = cv2.VideoCapture(0)
 camera.set(3, 640) #WIDTH
 camera.set(4, 480) #HEIGHT
 # set up a video stream
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
+face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
+eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
 # set up pygame, the library for displaying images
 pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
 # sets up window dimensions based on camera resolution
-screen = pygame.display.set_mode([1200,750])
+screen = pygame.display.set_mode([1200,800])
 # variables for drawing onto the screen
 screen_width = 1200
-screen_height = 750
+screen_height = 800
+top_margin = 25
+left_margin = 25
+font_size = 25
+font = pygame.font.Font('data/MODES.ttf', font_size)
+
+total_seconds = 15.0
 
 class States:
     RETR,EXTE,STOP = range(3)
 faceLen = 0
 def updateMotors():
     global faceLen
+    global seconds
+    global acState
+
     acState = States.RETR
     pState = States.RETR
-    sec = 0
+    seconds = 0
     lastSec = time.time()
     while True:
         if faceLen > 0:
             acState = States.STOP
         else:
             acState = pState
-            sec = time.time() - lastSec
+            seconds = time.time() - lastSec
         if acState == States.RETR:
-            print("Rectractin state.." + str(sec))
-            if sec > 15.0 :
+            print("Rectractin state.." + str(seconds))
+            if seconds > total_seconds :
                 acState = States.EXTE
                 pState = acState
                 lastSec = time.time()
         elif acState == States.EXTE:
-            print("Extending " + str(sec))
+            print("Extending " + str(seconds))
             pState = States.EXTE
-            if sec > 15.0:
+            if seconds > total_seconds:
                 acState = States.RETR
                 pState = acState
                 lastSec = time.time()
         elif acState == States.STOP:
-            print("Stop " + str(sec))
-            lastSec = time.time() -sec
+            print("Stop " + str(seconds))
+            lastSec = time.time() - seconds
 
 t = threading.Thread(target = updateMotors)
 t.daemon = True
@@ -83,7 +92,21 @@ try:
         # make a pygame surface from image
         # prepare surface to display
         screen.fill([0,0,0])
-        screen.blit(surface, (0,0))
+
+        stateText = ''
+        if acState == States.RETR:
+            stateText = "Retracting state: " + "{:0.2f}".format(seconds)
+        elif acState == States.EXTE:
+            stateText = "Extending state:  " + "{:0.2f}".format(seconds)
+        elif acState == States.STOP:
+            stateText = "Stop:             " + "{:0.2f}".format(seconds)
+
+        text = font.render(stateText, True, (255,0,0))
+        py = seconds*(screen_height-2*top_margin)/total_seconds
+        screen.blit(text, (2*left_margin + 750, top_margin + py))
+
+        screen.blit(surface, (left_margin, top_margin))
+
         pygame.display.update()
         # stop programme if esc key has been pressed
         for event in pygame.event.get():
