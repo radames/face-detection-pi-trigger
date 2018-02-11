@@ -102,7 +102,7 @@ try:
             stateText = "Stop:             " + "{:0.2f}".format(seconds)
 
         text = font.render(stateText, True, (255,0,0))
-        py = seconds*(screen_height-2*top_margin)/total_seconds
+        py = seconds*(screen_height-2*top_margin - font_size)/total_seconds
         screen.blit(text, (2*left_margin + 750, top_margin + py))
 
         screen.blit(surface, (left_margin, top_margin))
