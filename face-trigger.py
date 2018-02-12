@@ -13,7 +13,7 @@ import gpiozero
 # set up the camera
 time.sleep(1)
 camera = picamera.PiCamera()
-camera.resolution = (750, 750)
+camera.resolution = (640, 480)
 camera.framerate = 15
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
@@ -23,13 +23,13 @@ eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
 pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
 # sets up window dimensions based on camera resolution
-screen = pygame.display.set_mode(list(camera.resolution))
 # variables for drawing onto the screen
-screen_width = 750
-screen_height = 750
+screen_width = 1200
+screen_height = 800
 pin6 = gpiozero.DigitalOutputDevice(6, active_high=False)
 pin5 = gpiozero.DigitalOutputDevice(5, active_high=False)
 
+screen = pygame.display.set_mode([screen_width,screen_height])
 
 top_margin = 25
 left_margin = 25
@@ -50,7 +50,7 @@ def updateMotors():
     pState = States.RETR
     faceLen = 0
     seconds = 0
-    lastseconds = time.time()
+    lastSec = time.time()
     while True:
         if faceLen > 0:
             acState = States.STOP
