@@ -25,11 +25,12 @@ screen_width = 1200
 screen_height = 800
 top_margin = 25
 left_margin = 25
-font_size = 25
+font_size = 10
 font = pygame.font.Font('data/MODES.ttf', font_size)
 
 total_seconds = 15.0
-
+last_millis = 0
+py = 0
 class States:
     RETR,EXTE,STOP = range(3)
 faceLen = 0
@@ -91,7 +92,6 @@ try:
                 pygame.draw.rect(surface, (0,0,255), [x+ex,y+ey,ew,eh],2)
         # make a pygame surface from image
         # prepare surface to display
-        screen.fill([0,0,0])
 
         stateText = ''
         if acState == States.RETR:
@@ -102,8 +102,17 @@ try:
             stateText = "Stop:             " + "{:0.2f}".format(seconds)
 
         text = font.render(stateText, True, (255,0,0))
-        py = seconds*(screen_height-2*top_margin - font_size)/total_seconds
-        screen.blit(text, (2*left_margin + 750, top_margin + py))
+        millis = int(seconds*1000)
+        fontHeightN = int((screen_height-2*top_margin)/font_size)
+        if millis <= 100:
+            last_millis = millis
+            screen.fill([0,0,0])
+            py = 0
+        if millis - last_millis > (total_seconds*1000)/fontHeightN:
+            py +=1
+            last_millis = millis
+            screen.blit(text, (2*left_margin + 750, top_margin + py*font_size))
+
 
         screen.blit(surface, (left_margin, top_margin))
 
