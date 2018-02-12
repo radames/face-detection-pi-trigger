@@ -42,39 +42,43 @@ py = 0
 class States:
     RETR,EXTE,STOP = range(3)
 def updateMotors():
-    global faceLen = 0
-    global acState = States.RETR
+    global faceLen
+    global acState
+    global seconds
+
+    acState = States.RETR
     pState = States.RETR
-    sec = 0
-    lastSec = time.time()
+    faceLen = 0
+    seconds = 0
+    lastseconds = time.time()
     while True:
         if faceLen > 0:
             acState = States.STOP
         else:
             acState = pState
-            sec = time.time() - lastSec
+            seconds = time.time() - lastSec
         if acState == States.RETR:
-            print("Rectractin state.." + str(sec))
+            print("Rectractin state.." + str(seconds))
             pin5.off()
             pin6.on()
-            if sec > 15.0 :
+            if seconds > 15.0 :
                 acState = States.EXTE
                 pState = acState
                 lastSec = time.time()
         elif acState == States.EXTE:
-            print("Extending " + str(sec))
+            print("Extending " + str(seconds))
             pin5.on()
             pin6.off()
             pState = States.EXTE
-            if sec > 15.0:
+            if seconds > 15.0:
                 acState = States.RETR
                 pState = acState
                 lastSec = time.time()
         elif acState == States.STOP:
             pin5.off()
             pin6.off()
-            print("Stop " + str(sec))
-            lastSec = time.time() -sec
+            print("Stop " + str(seconds))
+            lastSec = time.time() - seconds
 t = threading.Thread(target = updateMotors)
 t.daemon = True
 try:
