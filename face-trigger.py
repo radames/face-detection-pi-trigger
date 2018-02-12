@@ -13,7 +13,7 @@ import gpiozero
 # set up the camera
 time.sleep(1)
 camera = picamera.PiCamera()
-camera.resolution = (640, 480)
+camera.resolution = (320, 240)
 camera.framerate = 15
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
@@ -126,7 +126,7 @@ try:
             last_millis = millis
             screen.blit(text, (2*left_margin + 750, top_margin + py*font_size))
 
-        screen.blit(surface, (0,0))
+        screen.blit(surface, (left_margin, top_margin)
         pygame.display.update()
         # stop programme if esc key has been pressed
         for event in pygame.event.get():
