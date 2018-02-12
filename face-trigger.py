@@ -41,10 +41,9 @@ last_millis = 0
 py = 0
 class States:
     RETR,EXTE,STOP = range(3)
-faceLen = 0
 def updateMotors():
-    global faceLen
-    acState = States.RETR
+    global faceLen = 0
+    global acState = States.RETR
     pState = States.RETR
     sec = 0
     lastSec = time.time()
