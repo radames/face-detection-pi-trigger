@@ -13,8 +13,8 @@ import gpiozero
 # set up the camera
 time.sleep(1)
 camera = picamera.PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 15
+camera.resolution = (320, 240)
+camera.framerate = 24
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
