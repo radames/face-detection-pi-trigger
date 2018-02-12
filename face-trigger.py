@@ -13,7 +13,7 @@ import gpiozero
 # set up the camera
 time.sleep(1)
 camera = picamera.PiCamera()
-camera.resolution = (320, 240)
+camera.resolution = (640, 480)
 camera.framerate = 15
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
@@ -24,8 +24,8 @@ pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
 # sets up window dimensions based on camera resolution
 # variables for drawing onto the screen
-screen_width = 1200
-screen_height = 800
+screen_width = 1060
+screen_height = 690
 pin6 = gpiozero.DigitalOutputDevice(6, active_high=False)
 pin5 = gpiozero.DigitalOutputDevice(5, active_high=False)
 
@@ -124,13 +124,15 @@ try:
         if millis - last_millis > (total_seconds*1000)/fontHeightN:
             py +=1
             last_millis = millis
-            screen.blit(text, (2*left_margin + 750, top_margin + py*font_size))
+            screen.blit(text, (2*left_margin + camera.resolution[0], top_margin + py*font_size))
 
-        screen.blit(surface, (left_margin, top_margin)
+        screen.blit(surface, (left_margin, top_margin))
         pygame.display.update()
         # stop programme if esc key has been pressed
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type  == pygame.KEYDOWN and event.key == pygame.K_a:
+                pygame.display.toggle_fullscreen()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 raise SystemExit
 # this is some magic code that detects when user hits ctrl-c (and stops the programme)
 except KeyboardInterrupt,SystemExit:
