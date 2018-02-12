@@ -33,7 +33,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 
 top_margin = 25
 left_margin = 25
-font_size = 10
+font_size = 20
 font = pygame.font.Font('data/MODES.ttf', font_size)
 
 total_seconds = 15.0
@@ -117,7 +117,7 @@ try:
         text = font.render(stateText, True, (255,0,0))
         millis = int(seconds*1000)
         fontHeightN = int((screen_height-2*top_margin)/font_size)
-        if millis <= 100:
+        if millis <= (total_seconds*1000)/fontHeightN:
             last_millis = millis
             screen.fill([0,0,0])
             py = 0
@@ -126,7 +126,7 @@ try:
             last_millis = millis
             screen.blit(text, (2*left_margin + camera.resolution[0], top_margin + py*font_size))
 
-        screen.blit(surface, (left_margin, top_margin))
+        screen.blit(surface, (left_margin, top_margin + camera.resolution[1]/2))
         pygame.display.update()
         # stop programme if esc key has been pressed
         for event in pygame.event.get():
