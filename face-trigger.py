@@ -17,8 +17,8 @@ camera.resolution = (750, 750)
 camera.framerate = 15
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
+face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
+eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
 # set up pygame, the library for displaying images
 pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
@@ -29,6 +29,16 @@ screen_width = 750
 screen_height = 750
 pin6 = gpiozero.DigitalOutputDevice(6, active_high=False)
 pin5 = gpiozero.DigitalOutputDevice(5, active_high=False)
+
+
+top_margin = 25
+left_margin = 25
+font_size = 10
+font = pygame.font.Font('data/MODES.ttf', font_size)
+
+total_seconds = 15.0
+last_millis = 0
+py = 0
 class States:
     RETR,EXTE,STOP = range(3)
 faceLen = 0
@@ -93,7 +103,26 @@ try:
                 pygame.draw.rect(surface, (0,0,255), [x+ex,y+ey,ew,eh],2)
         # make a pygame surface from image
         # prepare surface to display
-        screen.fill([0,0,0])
+        stateText = ''
+        if acState == States.RETR:
+            stateText = "Retracting state: " + "{:0.2f}".format(seconds)
+        elif acState == States.EXTE:
+            stateText = "Extending state:  " + "{:0.2f}".format(seconds)
+        elif acState == States.STOP:
+            stateText = "Stop:             " + "{:0.2f}".format(seconds)
+
+        text = font.render(stateText, True, (255,0,0))
+        millis = int(seconds*1000)
+        fontHeightN = int((screen_height-2*top_margin)/font_size)
+        if millis <= 100:
+            last_millis = millis
+            screen.fill([0,0,0])
+            py = 0
+        if millis - last_millis > (total_seconds*1000)/fontHeightN:
+            py +=1
+            last_millis = millis
+            screen.blit(text, (2*left_margin + 750, top_margin + py*font_size))
+
         screen.blit(surface, (0,0))
         pygame.display.update()
         # stop programme if esc key has been pressed
