@@ -10,6 +10,7 @@ import threading
 import picamera
 import picamera.array
 import gpiozero
+path = os.path.dirname(os.path.abspath(__file__))
 # set up the camera
 time.sleep(1)
 camera = picamera.PiCamera()
@@ -17,8 +18,8 @@ camera.resolution = (320, 240)
 camera.framerate = 24
 # set up a video stream
 video = picamera.array.PiRGBArray(camera)
-face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
+face_cascade = cv2.CascadeClassifier(path + "/data/haarcascade_frontalface_default.xml")
+eye_cascade = cv2.CascadeClassifier(path + "/data/haarcascade_eye.xml")
 # set up pygame, the library for displaying images
 pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
@@ -34,7 +35,7 @@ screen = pygame.display.set_mode([screen_width,screen_height])
 top_margin = 25
 left_margin = 25
 font_size = 20
-font = pygame.font.Font('data/MODES.ttf', font_size)
+font = pygame.font.Font(path + '/data/MODES.ttf', font_size)
 
 total_seconds = 15.0
 last_millis = 0

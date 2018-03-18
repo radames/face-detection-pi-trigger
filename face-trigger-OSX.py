@@ -7,14 +7,15 @@ import io
 import os
 import threading
 
+path = os.path.dirname(os.path.abspath(__file__))
 # set up the camera
 time.sleep(1)
 camera = cv2.VideoCapture(0)
 camera.set(3, 640) #WIDTH
 camera.set(4, 480) #HEIGHT
 # set up a video stream
-face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-eye_cascade = cv2.CascadeClassifier("data/haarcascade_eye.xml")
+face_cascade = cv2.CascadeClassifier(path + "/data/haarcascade_frontalface_default.xml")
+eye_cascade = cv2.CascadeClassifier(path + "/data/haarcascade_eye.xml")
 # set up pygame, the library for displaying images
 pygame.init()
 pygame.display.set_caption("OpenCV camera stream on Pygame")
@@ -26,7 +27,7 @@ screen_height = 800
 top_margin = 25
 left_margin = 25
 font_size = 10
-font = pygame.font.Font('data/MODES.ttf', font_size)
+font = pygame.font.Font(path + '/data/MODES.ttf', font_size)
 
 total_seconds = 15.0
 last_millis = 0
